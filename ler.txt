@@ -1,0 +1,2 @@
+https://www.simplilearn.com/tutorials/deep-learning-tutorial/perceptron 
+https://medium.com/data-science/perceptron-learning-algorithm-d5db0deab975
