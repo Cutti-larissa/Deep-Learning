@@ -43,7 +43,6 @@ eta = 0.1
 #Implemente aqui o algoritmo de treinamento
 incorretos = vetores
 prod_escalar = 0
-size = len(incorretos)
 while(size > 0):
   contador = 0
   for x in incorretos:
@@ -51,7 +50,8 @@ while(size > 0):
     x_vetor = x[:-1]
     prod_escalar = w.dot(x_vetor)
     if((x[-1] > 0 and prod_escalar > 0) or (x[-1] < 0 and prod_escalar < 0)):
-      size = size - 1
+      incorretos = np.delete(incorretos, contador, 0)
     else:
       w = w + eta
-  imprimir_plano(vetores, w, bias, incorretos)
+    size = len(incorretos)
+    imprimir_plano(vetores, w, bias, incorretos)
