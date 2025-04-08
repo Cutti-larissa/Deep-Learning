@@ -1,3 +1,26 @@
+# Função imprimir o plano atual
+def imprimir_plano(vetores, w, bias, incorretos = None):
+    clear_output(wait=True)
+    plt.figure()
+
+    plt.xlim(-1, 2)
+    plt.ylim(-1, 2)
+
+    y_hiperplano = (((x_hiperplano * w[0]) - bias )/w[1]) #cuidado, pode dar divisão por zero! #(x_hiperplano * -1*w[0])
+    plt.plot(x_hiperplano, y_hiperplano, color='orange')
+    plt.quiver(0,0, w[0], w[1], color=['b'], angles='xy', scale_units='xy', scale=1)
+
+    for x in vetores:
+      if x[2] == -1: #Iris Setosa
+        plt.plot(x[0], x[1], 'o', color='red')
+      else: #Iris Versicolour
+        plt.plot(x[0], x[1], '+', color='blue')
+    if incorretos is not None:
+      for x in incorretos:
+        plt.plot(x[0], x[1], '2', color='black')
+    plt.show()
+    return
+
 #Faça você mesmo #2
 from sklearn.preprocessing import MinMaxScaler
 
@@ -33,16 +56,17 @@ np.random.seed(42)
 np.random.shuffle(vetores) #misturando as linhas
 
 #Valores x da fronteira, apenas para poder visualizar
-x_hiperplano = np.array([-1,2])
+x_hiperplano = np.array([-1,2]) #-1 2
 
 #chute inicial. No mundo real, seria aleatório
 w =  np.array([1,-1])
 bias = 1
+w = np.insert(w, 0, bias)
 eta = 0.1
 
 #Implemente aqui o algoritmo de treinamento
-continuar = 1
-while(continuar<10):
+era = 100
+for i in range(era):
   incorretos = []
   for x in vetores:
     x_vetor = x[:-1]
@@ -53,10 +77,10 @@ while(continuar<10):
     else:
       w = w - eta #classe errada e classe correta multiplicadas sempre geram -1
       incorretos.insert(-1, x)
-    imprimir_plano(vetores, w, bias, incorretos) //linha laranja provavelmente errada
-  continuar += 1
-  if(incorretos is None):
-    continuar = 10
+    if(incorretos is None):
+      break
+  imprimir_plano(vetores, w, bias, incorretos)
+  print(i)
 
 #def ta_certo(dado, w, class_):
 #  dado = dado[:2]
