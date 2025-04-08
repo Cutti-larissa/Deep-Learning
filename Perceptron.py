@@ -37,25 +37,56 @@ x_hiperplano = np.array([-1,2])
 
 #chute inicial. No mundo real, seria aleatório
 w =  np.array([1,-1])
-bias = 1 #perguntar sobre esse bias
+bias = 1
 eta = 0.1
 
 #Implemente aqui o algoritmo de treinamento
-incorretos = vetores
-prod_escalar = 0
-size = len(incorretos)
-while(size > 0):
-  contador = 0
-  for x in incorretos:
+continuar = 1
+while(continuar<10):
+  incorretos = []
+  for x in vetores:
     x_vetor = x[:-1]
+    x_vetor = np.insert(x_vetor, 0, 1)
     prod_escalar = w.dot(x_vetor)
     if((x[-1] > 0 and prod_escalar > 0) or (x[-1] < 0 and prod_escalar < 0)):
-      incorretos = np.delete(incorretos, contador, 0)
-      contador = contador - 1
+      continue
     else:
-      w = w + eta
-      if(incorretos[contador][0] != x[0]):
-        np.insert(incorretos, -1, x, 0)
-    contador = contador + 1
-    size = len(incorretos)
-    imprimir_plano(vetores, w, bias, incorretos)
+      w = w - eta #classe errada e classe correta multiplicadas sempre geram -1
+      incorretos.insert(-1, x)
+    imprimir_plano(vetores, w, bias, incorretos) //linha laranja provavelmente errada
+  continuar += 1
+  if(incorretos is None):
+    continuar = 10
+
+#def ta_certo(dado, w, class_):
+#  dado = dado[:2]
+#  dado = np.insert(dado, 0, 1)
+#  result = w.dot(dado)
+#  if result >= 0 and class_ == 1:
+#    return True
+#  elif result < 0 and class_ == 0:
+#    return True
+#  return False
+
+#def catar_incorretos(vetores, w, class_):
+#  incorretos = []
+#  for vetor in vetores:
+#    if ta_certo(vetor, w, class_):
+#      continue
+#    else:
+#      incorretos.append(vetor)
+#    return incorretos
+
+#classes = [int(x[2]) for x in vetores]
+
+#epochs = 100
+#for epoch in range(epochs):
+#  for i, dado in enumerate(vetores):
+#      variavel = ta_certo(dado, w, i)    
+#      if variavel:
+#        continue
+#      else:
+#        w = w - eta 
+#  incorretos = catar_incorretos(vetores, w, classes)
+#  print(incorretos)
+#  imprimir_plano(vetores, w, bias, incorretos)
