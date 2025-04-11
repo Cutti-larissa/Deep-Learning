@@ -25,11 +25,36 @@ vetores = np.concatenate((vetores_classe_0.to_numpy(), vetores_classe_1.to_numpy
 
 #use KFold paraf fazer um teste de 5 folds. Mostre a matriz de confusão final, e a acurácia média
 kf = KFold()
-treino = []
+#iris espera - 1
+#versicolor espera 1
+irisC = 0
+irisE = 0
+versiC = 0
+versiE = 0 
+contagem = 0
 for train_index, test_index in kf.split(vetores):
+  classifier = Perceptron(eta0 = 0.05)
+  treino = np.empty(len(train_index))
   for i in train_index:
-    treino = treino.insert(vetores[i], -1)
-    print(treino)
-  for i in test_index:
-    print("testar e verificar acertos")
+    for j, x in enumerate(vetores):
+      if(i == j):
+        treino = np.insert(treino, -1, x) #rever
+    treino = vetores[i] #a matriz de treino recebe o vetor de treino de indice i
+  classifier.fit(treino[:,[0,1]], treino[:,2])
+  teste = []
+  for j in test_index:
+    teste = vetores[i] #a matriz de teste recebe o vetor de teste de indice i
+  predictions = classifier.predict(teste[:, [0, 1]])
+  for i in teste:
+    if (i[2] == predictions[contagem]):
+      if(predictions[contagem] > 0):
+        versiC += 1
+      else:
+        irisC += 1
+    else:
+      if (predictions[contagem] > 0):
+        irisE += 1
+      else:
+        versiE += 1
+    contagem += 1  
   #construir matriz de confusão 
