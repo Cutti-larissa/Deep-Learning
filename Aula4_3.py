@@ -24,37 +24,56 @@ vetores_classe_1["target"] = + 1
 vetores = np.concatenate((vetores_classe_0.to_numpy(), vetores_classe_1.to_numpy()))
 
 #use KFold paraf fazer um teste de 5 folds. Mostre a matriz de confusão final, e a acurácia média
-kf = KFold()
-#iris espera - 1
-#versicolor espera 1
+#iris (-1) versi (1)
 irisC = 0
 irisE = 0
 versiC = 0
-versiE = 0 
-contagem = 0
+versiE = 0
+
+kf = KFold(n_splits=5, shuffle=True)
 for train_index, test_index in kf.split(vetores):
   classifier = Perceptron(eta0 = 0.05)
-  treino = np.empty(len(train_index))
+  treino = [[0.0,0.0,0.0]] #ultimo vetor de treino
+  treino = np.array(treino)
+  teste = [[0.0,0.0,0.0]] #ultimo vetor de teste
+  teste = np.array(teste)
   for i in train_index:
     for j, x in enumerate(vetores):
       if(i == j):
-        treino = np.insert(treino, -1, x) #rever
-    treino = vetores[i] #a matriz de treino recebe o vetor de treino de indice i
+        treino = np.insert(treino, -1, x, axis = 0) #insere x no treino
+  treino = np.delete(treino, -1, axis = 0)
   classifier.fit(treino[:,[0,1]], treino[:,2])
-  teste = []
-  for j in test_index:
-    teste = vetores[i] #a matriz de teste recebe o vetor de teste de indice i
+  for k in test_index:
+    for l, y in enumerate(vetores):
+      if(k == l):
+        teste = np.insert(teste, -1, y, axis = 0) #insere y no teste
+  teste = np.delete(teste, -1, axis = 0)
   predictions = classifier.predict(teste[:, [0, 1]])
-  for i in teste:
-    if (i[2] == predictions[contagem]):
-      if(predictions[contagem] > 0):
-        versiC += 1
-      else:
+  corretos = teste[:, [2]]
+  for n, m in enumerate(predictions):
+    if(m == corretos[n]):
+      if(m < 0):
         irisC += 1
-    else:
-      if (predictions[contagem] > 0):
-        irisE += 1
       else:
+        versiC += 1
+    else:
+      if(m < 0):
         versiE += 1
-    contagem += 1  
+      else:
+        irisE += 1
+  
+
+#construir matriz de confusão 
+
+acuracia = ((irisC + versiC)/(irisC + irisE + versiC + versiE))
+print("Acurácia:", acuracia)
+
+classes = ("Iris Setosa", "Versicolour")
+
+print('\t')
+for classe in classes:
+    print("\t" + classe, end='')
+print()
+print(classes[0], "  ", irisC,"     ", "     ", versiE)
+print(classes[1], "  ", irisE,"     ", "     ", versiC)
   #construir matriz de confusão 
