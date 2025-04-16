@@ -1,3 +1,4 @@
+#Tá certo??
 negativo = np.random.uniform(1.2,0.7,(10,2))
 positivo = np.array(negativo)
 
